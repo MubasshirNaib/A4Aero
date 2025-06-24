@@ -1,0 +1,23 @@
+[
+  {
+    "ContainingType": "Backend.Api.Controllers.AgencyController",
+    "Method": "ValidateAgency",
+    "RelativePath": "api/{apiVersion}/Authenticate/ValidateAgency",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Backend.Core.Dtos.ValidateAgencyRequest",
+        "IsRequired": true
+      },
+      {
+        "Name": "apiVersion",
+        "Type": "",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  }
+]
