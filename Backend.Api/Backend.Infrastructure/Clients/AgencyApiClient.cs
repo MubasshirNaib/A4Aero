@@ -56,5 +56,62 @@ namespace Backend.Infrastructure.Clients
                 };
             }
         }
+
+        public FlightSearchResponse SearchFlights(FlightSearchRequest request)
+        {
+            try
+            {
+                var apiUrl = $"{_settings.BaseUrl.TrimEnd('/')}/Search/Search";
+                _logger.LogInformation("Sending flight search request to external API: {ApiUrl}", apiUrl);
+
+                var content = new StringContent(
+                    JsonSerializer.Serialize(request, new JsonSerializerOptions { IgnoreNullValues = true }),
+                    Encoding.UTF8,
+                    "application/json");
+
+                var response = _httpClient.PostAsync(apiUrl, content).Result; // Synchronous call
+                response.EnsureSuccessStatusCode();
+
+                var responseContent = response.Content.ReadAsStringAsync().Result;
+                _logger.LogInformation("Received flight search response from external API: {ResponseContent}", responseContent);
+
+                try
+                {
+                    var result = JsonSerializer.Deserialize<FlightSearchResponse>(responseContent);
+                    return result ?? new FlightSearchResponse
+                    {
+                        IsSuccess = false,
+                        Errors = new List<ErrorDetail> { new ErrorDetail { Message = "Invalid response received" } }
+                    };
+                }
+                catch (JsonException ex)
+                {
+                    _logger.LogError(ex, "JSON deserialization error: {Message}", ex.Message);
+                    return new FlightSearchResponse
+                    {
+                        IsSuccess = false,
+                        Errors = new List<ErrorDetail> { new ErrorDetail { Message = $"Deserialization failed: {ex.Message}" } }
+                    };
+                }
+            }
+            catch (HttpRequestException ex)
+            {
+                _logger.LogError(ex, "Error calling flight search API: {Message}", ex.Message);
+                return new FlightSearchResponse
+                {
+                    IsSuccess = false,
+                    Errors = new List<ErrorDetail> { new ErrorDetail { Message = ex.Message } }
+                };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Unexpected error in flight search: {Message}", ex.Message);
+                return new FlightSearchResponse
+                {
+                    IsSuccess = false,
+                    Errors = new List<ErrorDetail> { new ErrorDetail { Message = ex.Message } }
+                };
+            }
+        }
     }
 }

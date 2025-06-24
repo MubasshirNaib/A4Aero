@@ -2,9 +2,8 @@
 
 namespace Backend.Core.Interfaces
 {
-    public interface IAgencyApiClient
+    public interface IFlightSearchService
     {
-        Task<ValidateAgencyResponse> ValidateAgencyAsync(ValidateAgencyRequest request);
         FlightSearchResponse SearchFlights(FlightSearchRequest request);
     }
 }

@@ -11,6 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddHttpClient();
 builder.Services.AddScoped<IAgencyValidationService, AgencyValidationService>();
+builder.Services.AddScoped<IFlightSearchService, FlightSearchService>();
 builder.Services.AddScoped<IAgencyApiClient, AgencyApiClient>();
 builder.Services.AddLogging(logging =>
 {
